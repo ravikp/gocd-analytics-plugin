@@ -103,7 +103,7 @@ dependencies {
 
   mockDriverImplementation 'com.google.code.gson:gson:2.10.1'
   mockDriverImplementation 'com.sparkjava:spark-core:2.7.2'
-  mockDriverImplementation 'com.sparkjava:spark-template-thymeleaf:2.7.1'
+  mockDriverImplementation 'com.sparkjava:spark-template-freemarker:2.7.1'
 
   compileOnly 'cd.go.plugin:go-plugin-api:23.4.0'
   implementation 'com.google.code.gson:gson:2.10.1'
@@ -275,3 +275,32 @@ task runMockDriver(type: JavaExec) {
 }
 
 runMockDriver.dependsOn compileMockDriverJava
+
+task showSourceSets(){
+  doLast{
+    sourceSets.each { srcSet ->
+      println "["+srcSet.name+"]"
+      print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+      print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+
+      print "-->Compile classpath:\n"
+      srcSet.compileClasspath.files.each {
+        print "  "+it.path+"\n"
+      }
+      println ""
+
+      print "-->Runtime classpath:\n"
+      srcSet.runtimeClasspath.files.each {
+        print "  "+it.path+"\n"
+      }
+      println ""
+
+    }
+  }
+}
+
+task showConfigurations  {
+  doLast {
+    configurations.all { conf -> println(conf) }
+  }
+}

@@ -16,7 +16,8 @@ public class Main {
     port(4567);
     Gson gson = new Gson();
 
-    get("/example", (req, res) -> renderView(exampleModel(), "example"));
+    get("/index", (req, res) -> F.renderView(exampleModel(), "example"));
+
     get("/agents", (req, res) -> {
       res.type("application/json");
       return agents();
@@ -33,8 +34,8 @@ public class Main {
   }
 
   private static Map<String, Object> exampleModel() {
-    Map<String, Object> model = new HashMap<>();
-    model.put("message", "Hello Thymeleaf");
+    var model = new HashMap<String, Object>();
+    model.put("message", "Hello Freemarker!!");
     return model;
   }
 }
