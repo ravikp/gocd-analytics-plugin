@@ -100,4 +100,21 @@ public class AgentUtilizationMother {
 
         return agentUtilization;
     }
+
+    public static AgentUtilization agentUtilizationWith(String uuid, ZonedDateTime utilizationDate, String lastKnownState,
+                                                        ZonedDateTime transitionTime, int idleDuration, int buildingDuration,
+                                                        int cancelledDuration, String hostName) {
+        AgentUtilization agentUtilization = new AgentUtilization();
+
+        agentUtilization.setUuid(uuid);
+        agentUtilization.setUtilizationDate(utilizationDate);
+        agentUtilization.setLastKnownState(lastKnownState);
+        agentUtilization.setLastTransitionTime(transitionTime);
+        agentUtilization.setIdleDurationSecs(idleDuration);
+        agentUtilization.setBuildingDurationSecs(buildingDuration);
+        agentUtilization.setCancelledDurationSecs(cancelledDuration);
+        agentUtilization.setAgentHostName(hostName);
+
+        return agentUtilization;
+    }
 }

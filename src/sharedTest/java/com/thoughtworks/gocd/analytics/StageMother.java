@@ -16,6 +16,7 @@
 
 package com.thoughtworks.gocd.analytics;
 
+import com.thoughtworks.gocd.analytics.models.Agent;
 import com.thoughtworks.gocd.analytics.models.Stage;
 
 import java.time.ZonedDateTime;
@@ -45,4 +46,33 @@ public class StageMother {
 
         return stage;
     }
+
+    public static Stage stageWith(String pipelineName, int pipelineCounter, String stageName, int stageCounter,
+                                  String result, String state, int duration, ZonedDateTime scheduledAt) {
+        Stage stage = new Stage();
+        stage.setPipelineName(pipelineName);
+        stage.setPipelineCounter(pipelineCounter);
+        stage.setStageName(stageName);
+        stage.setStageCounter(stageCounter);
+        stage.setResult(result);
+        stage.setState(state);
+        stage.setTotalTimeSecs(duration);
+        stage.setScheduledAt(scheduledAt);
+
+        return stage;
+    }
+
+    public static Stage stageWith(String pipelineName, int pipelineCounter, String stageName, int stageCounter, String result,
+                                  String state, int duration, ZonedDateTime scheduledAt, String approvalType, String approvedBy,
+                                  ZonedDateTime completedAt, int timeWaiting) {
+        Stage stage = stageWith(pipelineName, pipelineCounter, stageName, stageCounter, result, state, duration, scheduledAt);
+
+        stage.setApprovalType(approvalType);
+        stage.setApprovedBy(approvedBy);
+        stage.setCompletedAt(completedAt);
+        stage.setTimeWaitingSecs(timeWaiting);
+
+        return stage;
+    }
 }
+

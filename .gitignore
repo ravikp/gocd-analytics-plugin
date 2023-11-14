@@ -28,3 +28,6 @@ src/main/resources-generated/
 
 node_modules/
 logs/
+
+gocd-analytics-plugin.ipr
+gocd-analytics-plugin.iws

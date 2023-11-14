@@ -17,6 +17,7 @@
 plugins {
   id "java"
   id "com.github.node-gradle.node" version "7.0.1"
+  id "idea"
 }
 
 apply from: "https://raw.githubusercontent.com/gocd/gocd-plugin-gradle-task-helpers/master/helper.gradle?_=${(int) (new Date().toInstant().epochSecond / 60)}"
@@ -58,11 +59,36 @@ repositories {
 }
 
 sourceSets {
+  sharedTest {
+    java.srcDirs = ['src/sharedTest/java']
+    compileClasspath += main.output
+    runtimeClasspath += main.output
+  }
+
+  mockDriver {
+    java.srcDirs = ['src/mockDriver/java']
+    compileClasspath += sharedTest.output + main.output
+    runtimeClasspath += sharedTest.output + main.output
+  }
+
+  test {
+    compileClasspath += sharedTest.output
+    runtimeClasspath += sharedTest.output
+  }
+
   integrationTest {
     java.srcDirs = ['src/integration/java']
     resources.srcDirs += ['src/testdata']
-    compileClasspath += sourceSets.main.output
-    runtimeClasspath += sourceSets.main.output
+    compileClasspath += main.output + sharedTest.output
+    runtimeClasspath += main.output + sharedTest.output
+  }
+}
+
+idea {
+  module {
+    sourceDirs += sourceSets.sharedTest.java.srcDirs
+    sourceDirs += sourceSets.mockDriver.java.srcDirs
+    testSourceDirs += sourceSets.integrationTest.java.srcDirs
   }
 }
 
@@ -73,6 +99,12 @@ configurations {
 }
 
 dependencies {
+  sharedTestImplementation 'com.google.code.gson:gson:2.10.1'
+
+  mockDriverImplementation 'com.google.code.gson:gson:2.10.1'
+  mockDriverImplementation 'com.sparkjava:spark-core:2.7.2'
+  mockDriverImplementation 'com.sparkjava:spark-template-thymeleaf:2.7.1'
+
   compileOnly 'cd.go.plugin:go-plugin-api:23.4.0'
   implementation 'com.google.code.gson:gson:2.10.1'
   implementation('org.postgresql:postgresql:42.6.0') {
@@ -234,3 +266,12 @@ jar {
     into "lib/"
   }
 }
+
+task runMockDriver(type: JavaExec) {
+  group = "Execution"
+  description = "Run the mock driver class with JavaExecTask"
+  classpath = sourceSets.mockDriver.runtimeClasspath
+  mainClass = 'com.thoughtworks.gocd.analytics.mockdriver.Main'
+}
+
+runMockDriver.dependsOn compileMockDriverJava
